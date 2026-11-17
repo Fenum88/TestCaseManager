@@ -1,0 +1,25 @@
+<UserControl x:Class="TestCaseManager.UI.Controls.HelpHint"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             VerticalAlignment="Center">
+
+    <!--
+        Die Texte werden im Code-Behind gesetzt und nicht gebunden: Der Tooltip
+        liegt in einem eigenen Popup-Baum, in den der DataContext des
+        Steuerelements nicht zuverlässig hineinreicht.
+    -->
+    <Border Style="{StaticResource HelpBadge}">
+        <Border.ToolTip>
+            <ToolTip Style="{StaticResource HelpTooltip}">
+                <StackPanel>
+                    <TextBlock x:Name="TextBlockMain" Style="{StaticResource MutedText}"
+                               TextWrapping="Wrap" />
+                    <!-- Optionaler Zusatz in fester Schrittweite (z. B. Operatorlisten). -->
+                    <TextBlock x:Name="TextBlockDetail" Style="{StaticResource MutedText}"
+                               FontFamily="Consolas" Margin="0,10,0,0" TextWrapping="Wrap" />
+                </StackPanel>
+            </ToolTip>
+        </Border.ToolTip>
+        <TextBlock Style="{StaticResource HelpBadgeGlyph}" />
+    </Border>
+</UserControl>

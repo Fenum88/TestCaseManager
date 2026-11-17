@@ -1,0 +1,157 @@
+<Window x:Class="TestCaseManager.UI.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:viewModels="clr-namespace:TestCaseManager.UI.ViewModels"
+        xmlns:views="clr-namespace:TestCaseManager.UI.Views"
+        Title="Testfallverwaltung"
+        Height="800" Width="1280"
+        MinHeight="600" MinWidth="1000"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource PageBrush}"
+        FontFamily="Segoe UI">
+
+    <Window.Resources>
+        <!-- Abbildung der ViewModels auf ihre Ansichten (MVVM). -->
+        <DataTemplate DataType="{x:Type viewModels:DashboardViewModel}">
+            <views:DashboardView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:TestCaseListViewModel}">
+            <views:TestCaseListView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:ImportExportViewModel}">
+            <views:ImportExportView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:CalculationViewModel}">
+            <views:CalculationView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:TestScenariosViewModel}">
+            <views:TestScenariosView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:DatabaseViewModel}">
+            <views:DatabaseView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:SettingsViewModel}">
+            <views:SettingsView />
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="230" MinWidth="190" MaxWidth="420" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Seitenleiste mit Navigation -->
+        <Border Grid.Column="0"
+                Background="{StaticResource SurfaceBrush}"
+                BorderBrush="{StaticResource HairlineBrush}"
+                BorderThickness="0,0,1,0">
+            <DockPanel LastChildFill="False">
+                <StackPanel DockPanel.Dock="Top">
+                    <StackPanel Orientation="Horizontal" Margin="20,24,20,28">
+                        <Border Background="{StaticResource AccentBrush}" CornerRadius="8"
+                                Width="34" Height="34">
+                            <TextBlock Text="&#xE9D5;" FontFamily="Segoe MDL2 Assets"
+                                       FontSize="16" Foreground="White"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <StackPanel Margin="10,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="Testfallverwaltung" FontWeight="SemiBold" FontSize="14"
+                                       Foreground="{StaticResource InkPrimaryBrush}" />
+                            <TextBlock Text="Berechnungssystem" Style="{StaticResource MutedText}" />
+                        </StackPanel>
+                    </StackPanel>
+
+                    <RadioButton x:Name="DashboardNavButton"
+                                 Style="{StaticResource NavButton}"
+                                 GroupName="Navigation"
+                                 Command="{Binding ShowDashboardCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE80F;" FontFamily="Segoe MDL2 Assets" FontSize="15"
+                                       Margin="0,0,10,0" VerticalAlignment="Center" />
+                            <TextBlock Text="Dashboard" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton x:Name="TestCasesNavButton"
+                                 Style="{StaticResource NavButton}"
+                                 GroupName="Navigation"
+                                 Command="{Binding ShowTestCasesCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE9D2;" FontFamily="Segoe MDL2 Assets" FontSize="15"
+                                       Margin="0,0,10,0" VerticalAlignment="Center" />
+                            <TextBlock Text="Testfälle" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton x:Name="ImportExportNavButton"
+                                 Style="{StaticResource NavButton}"
+                                 GroupName="Navigation"
+                                 Command="{Binding ShowImportExportCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE8B5;" FontFamily="Segoe MDL2 Assets" FontSize="15"
+                                       Margin="0,0,10,0" VerticalAlignment="Center" />
+                            <TextBlock Text="Import / Export" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton x:Name="CalculationNavButton"
+                                 Style="{StaticResource NavButton}"
+                                 GroupName="Navigation"
+                                 Command="{Binding ShowCalculationCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE9F5;" FontFamily="Segoe MDL2 Assets" FontSize="15"
+                                       Margin="0,0,10,0" VerticalAlignment="Center" />
+                            <TextBlock Text="Berechnung" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton x:Name="ScenariosNavButton"
+                                 Style="{StaticResource NavButton}"
+                                 GroupName="Navigation"
+                                 Command="{Binding ShowScenariosCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE8FD;" FontFamily="Segoe MDL2 Assets" FontSize="15"
+                                       Margin="0,0,10,0" VerticalAlignment="Center" />
+                            <TextBlock Text="Testszenarien" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton x:Name="DatabaseNavButton"
+                                 Style="{StaticResource NavButton}"
+                                 GroupName="Navigation"
+                                 Command="{Binding ShowDatabaseCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE8F1;" FontFamily="Segoe MDL2 Assets" FontSize="15"
+                                       Margin="0,0,10,0" VerticalAlignment="Center" />
+                            <TextBlock Text="Datenbank" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton x:Name="SettingsNavButton"
+                                 Style="{StaticResource NavButton}"
+                                 GroupName="Navigation"
+                                 Command="{Binding ShowSettingsCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="15"
+                                       Margin="0,0,10,0" VerticalAlignment="Center" />
+                            <TextBlock Text="Einstellungen" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </RadioButton>
+                </StackPanel>
+
+                <TextBlock DockPanel.Dock="Bottom" Margin="20,0,20,16"
+                           Style="{StaticResource MutedText}"
+                           Text="PostgreSQL · Entity Framework Core" />
+            </DockPanel>
+        </Border>
+
+        <!-- Ziehbarer Trenner: Seitenleiste ↔ Inhalt -->
+        <GridSplitter Grid.Column="1" Style="{StaticResource ColumnSplitter}"
+                      ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" />
+
+        <!-- Inhaltsbereich -->
+        <ContentControl Grid.Column="2" Content="{Binding CurrentViewModel}" />
+    </Grid>
+</Window>

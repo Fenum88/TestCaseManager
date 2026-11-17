@@ -1,0 +1,18 @@
+# Build-Ausgaben
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+*.user
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.suo
+
+# Logs der Anwendung
+logs/
+
+# Betriebssystem
+Thumbs.db
+.DS_Store

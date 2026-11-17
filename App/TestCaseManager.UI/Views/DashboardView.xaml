@@ -1,0 +1,243 @@
+<UserControl x:Class="TestCaseManager.UI.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:TestCaseManager.UI.Converters"
+             xmlns:controls="clr-namespace:TestCaseManager.UI.Controls">
+
+    <UserControl.Resources>
+        <converters:ChangeTypeToTextConverter x:Key="ChangeTypeToText" />
+        <converters:UtcToLocalTextConverter x:Key="UtcToLocalText" />
+        <converters:StatusToTextConverter x:Key="StatusToText" />
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="28,24,28,24">
+        <StackPanel MaxWidth="1200" HorizontalAlignment="Stretch">
+
+            <!-- Kopfzeile -->
+            <DockPanel Margin="0,0,0,20">
+                <Button DockPanel.Dock="Right" Style="{StaticResource SecondaryButton}"
+                        Command="{Binding LoadCommand}" Content="Aktualisieren" />
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Dashboard" Style="{StaticResource PageTitle}" />
+                    <controls:HelpHint Margin="12,0,0,0"
+                                       Text="Überblick über alle Testfälle des Berechnungssystems." />
+                </StackPanel>
+            </DockPanel>
+
+            <!-- Kennzahlen-Kacheln -->
+            <UniformGrid Columns="4" Margin="-8,0">
+                <Border Style="{StaticResource Card}" Margin="8,0">
+                    <StackPanel>
+                        <TextBlock Text="{Binding TotalTestCases}" FontSize="30" FontWeight="SemiBold"
+                                   Foreground="{StaticResource InkPrimaryBrush}" />
+                        <TextBlock Text="Testfälle gesamt" Style="{StaticResource MutedText}" Margin="0,4,0,0" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Card}" Margin="8,0">
+                    <StackPanel>
+                        <TextBlock Text="{Binding TotalCategories}" FontSize="30" FontWeight="SemiBold"
+                                   Foreground="{StaticResource InkPrimaryBrush}" />
+                        <TextBlock Text="Kategorien" Style="{StaticResource MutedText}" Margin="0,4,0,0" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Card}" Margin="8,0">
+                    <StackPanel>
+                        <TextBlock Text="{Binding TotalTags}" FontSize="30" FontWeight="SemiBold"
+                                   Foreground="{StaticResource InkPrimaryBrush}" />
+                        <TextBlock Text="Tags" Style="{StaticResource MutedText}" Margin="0,4,0,0" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Card}" Margin="8,0">
+                    <StackPanel>
+                        <TextBlock Text="{Binding TotalAttachments}" FontSize="30" FontWeight="SemiBold"
+                                   Foreground="{StaticResource InkPrimaryBrush}" />
+                        <TextBlock Text="Anhänge" Style="{StaticResource MutedText}" Margin="0,4,0,0" />
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <!-- Verteilungen -->
+            <Grid Margin="0,16,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Testfälle je Status -->
+                <Border Grid.Column="0" Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Testfälle je Status" Style="{StaticResource SectionTitle}" />
+                        <ItemsControl ItemsSource="{Binding StatusStats}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,5">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="110" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="44" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Ellipse Width="8" Height="8" Fill="{Binding Brush}"
+                                                     VerticalAlignment="Center" Margin="0,0,8,0" />
+                                            <TextBlock Text="{Binding Label}" FontSize="12"
+                                                       Foreground="{StaticResource InkSecondaryBrush}" />
+                                        </StackPanel>
+                                        <ProgressBar Grid.Column="1" Style="{StaticResource StatBar}"
+                                                     Foreground="{Binding Brush}"
+                                                     Maximum="{Binding MaxCount, Mode=OneWay}"
+                                                     Value="{Binding Count, Mode=OneWay}"
+                                                     VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="2" Text="{Binding Count}"
+                                                   FontSize="12" FontWeight="SemiBold" TextAlignment="Right"
+                                                   Foreground="{StaticResource InkPrimaryBrush}"
+                                                   VerticalAlignment="Center" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <!-- Testfälle je Kategorie -->
+                <Border Grid.Column="2" Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Testfälle je Kategorie" Style="{StaticResource SectionTitle}" />
+                        <ItemsControl ItemsSource="{Binding CategoryStats}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,5">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="140" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="44" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding Name}" FontSize="12"
+                                                   Foreground="{StaticResource InkSecondaryBrush}"
+                                                   TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                                        <ProgressBar Grid.Column="1" Style="{StaticResource StatBar}"
+                                                     Maximum="{Binding MaxCount, Mode=OneWay}"
+                                                     Value="{Binding Count, Mode=OneWay}"
+                                                     VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="2" Text="{Binding Count}"
+                                                   FontSize="12" FontWeight="SemiBold" TextAlignment="Right"
+                                                   Foreground="{StaticResource InkPrimaryBrush}"
+                                                   VerticalAlignment="Center" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock Text="Noch keine Testfälle vorhanden.">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource MutedText}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding CategoryStats.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Letzte Aktivitäten -->
+            <Grid Margin="0,16,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Zuletzt geänderte Testfälle -->
+                <Border Grid.Column="0" Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Zuletzt geänderte Testfälle" Style="{StaticResource SectionTitle}" />
+                        <ItemsControl ItemsSource="{Binding RecentTestCases}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="{StaticResource HairlineBrush}"
+                                            BorderThickness="0,0,0,1" Padding="0,8">
+                                        <DockPanel>
+                                            <TextBlock DockPanel.Dock="Right"
+                                                       Text="{Binding LastChangedAt, Converter={StaticResource UtcToLocalText}}"
+                                                       Style="{StaticResource MutedText}" VerticalAlignment="Center" />
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="13"
+                                                           Foreground="{StaticResource InkPrimaryBrush}"
+                                                           TextTrimming="CharacterEllipsis" />
+                                                <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                                                    <TextBlock Text="{Binding Status, Converter={StaticResource StatusToText}}"
+                                                               Style="{StaticResource MutedText}" />
+                                                    <TextBlock Text=" · " Style="{StaticResource MutedText}" />
+                                                    <TextBlock Text="{Binding CategoryName, TargetNullValue=ohne Kategorie}"
+                                                               Style="{StaticResource MutedText}" />
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </DockPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <!-- Audit-Log -->
+                <Border Grid.Column="2" Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Letzte Änderungen (Audit-Log)" Style="{StaticResource SectionTitle}" />
+                        <ItemsControl ItemsSource="{Binding RecentChanges}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="{StaticResource HairlineBrush}"
+                                            BorderThickness="0,0,0,1" Padding="0,7">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="105" />
+                                                <ColumnDefinition Width="70" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding Timestamp, Converter={StaticResource UtcToLocalText}}"
+                                                       Style="{StaticResource MutedText}" VerticalAlignment="Center" />
+                                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding Action, Converter={StaticResource ChangeTypeToText}}"
+                                                       FontSize="12" FontWeight="SemiBold"
+                                                       Foreground="{StaticResource InkSecondaryBrush}"
+                                                       VerticalAlignment="Center" />
+                                            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding EntityName}" FontSize="12"
+                                                           Foreground="{StaticResource InkMutedBrush}" />
+                                                <TextBlock Text=" · " FontSize="12"
+                                                           Foreground="{StaticResource InkMutedBrush}" />
+                                                <TextBlock Text="{Binding Details}" FontSize="12"
+                                                           Foreground="{StaticResource InkPrimaryBrush}"
+                                                           TextTrimming="CharacterEllipsis" MaxWidth="220" />
+                                            </StackPanel>
+                                            <TextBlock Grid.Column="3" Text="{Binding UserName}"
+                                                       Style="{StaticResource MutedText}" VerticalAlignment="Center" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock Text="Noch keine Änderungen protokolliert." Margin="0,8,0,0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource MutedText}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RecentChanges.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,153 @@
+<UserControl x:Class="TestCaseManager.UI.Views.TestCaseListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:TestCaseManager.UI.Converters"
+             xmlns:controls="clr-namespace:TestCaseManager.UI.Controls">
+
+    <UserControl.Resources>
+        <converters:StatusToTextConverter x:Key="StatusToText" />
+        <converters:StatusToBrushConverter x:Key="StatusToBrush" />
+        <converters:UtcToLocalTextConverter x:Key="UtcToLocalText" />
+    </UserControl.Resources>
+
+    <Grid Margin="28,24,28,24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Kopfzeile mit Aktionen -->
+        <DockPanel Grid.Row="0" Margin="0,0,0,18">
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                <Button Style="{StaticResource SecondaryButton}" Margin="0,0,8,0"
+                        Command="{Binding OpenCommand}" Content="Details"
+                        ToolTip="Alle Attribute des Testfalls anzeigen (oder Doppelklick)" />
+                <Button Style="{StaticResource SecondaryButton}" Margin="0,0,8,0"
+                        Command="{Binding EditCommand}" Content="Bearbeiten" />
+                <Button Style="{StaticResource SecondaryButton}" Margin="0,0,8,0"
+                        Command="{Binding CopyCommand}" Content="Kopieren" />
+                <Button Style="{StaticResource DangerButton}" Margin="0,0,8,0"
+                        Command="{Binding DeleteCommand}" Content="Löschen" />
+                <Button Style="{StaticResource PrimaryButton}"
+                        Command="{Binding NewCommand}" Content="+ Neuer Testfall" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Testfälle" Style="{StaticResource PageTitle}" />
+                <controls:HelpHint Margin="12,0,0,0"
+                                   Text="Alle Testfälle der Datenbank – interaktive und eingelesene Datei-Testfälle." />
+            </StackPanel>
+        </DockPanel>
+
+        <!-- Filterleiste -->
+        <Border Grid.Row="1" Style="{StaticResource Card}" Padding="14" Margin="0,0,0,14">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="170" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="190" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="170" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBox Grid.Column="0" Style="{StaticResource InputBox}"
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged, Delay=10}"
+                         VerticalAlignment="Center"
+                         ToolTip="Suche in Name, Beschreibung und Version" />
+                <ComboBox Grid.Column="2" VerticalAlignment="Center"
+                          ItemsSource="{Binding StatusFilters}"
+                          SelectedItem="{Binding SelectedStatusFilter}"
+                          DisplayMemberPath="Label" />
+                <ComboBox Grid.Column="4" VerticalAlignment="Center"
+                          ItemsSource="{Binding CategoryFilters}"
+                          SelectedItem="{Binding SelectedCategoryFilter}"
+                          DisplayMemberPath="Label" />
+                <ComboBox Grid.Column="6" VerticalAlignment="Center"
+                          ItemsSource="{Binding TagFilters}"
+                          SelectedItem="{Binding SelectedTagFilter}"
+                          DisplayMemberPath="Label" />
+                <Button Grid.Column="8" Style="{StaticResource SecondaryButton}"
+                        Command="{Binding ResetFiltersCommand}" Content="Zurücksetzen" />
+            </Grid>
+        </Border>
+
+        <!-- Testfallliste -->
+        <Border Grid.Row="2" Style="{StaticResource Card}" Padding="6">
+            <DataGrid Style="{StaticResource ModernGrid}"
+                      ItemsSource="{Binding TestCases}"
+                      SelectedItem="{Binding SelectedTestCase}"
+                      IsReadOnly="True">
+                <DataGrid.InputBindings>
+                    <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding OpenCommand}" />
+                </DataGrid.InputBindings>
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="Status" Width="130" SortMemberPath="Status">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <!-- Status wird für Datei-Testfälle ausgeblendet (haben keinen). -->
+                                    <StackPanel.Style>
+                                        <Style TargetType="StackPanel">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsImported}" Value="True">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <Ellipse Width="8" Height="8" VerticalAlignment="Center" Margin="0,0,8,0"
+                                             Fill="{Binding Status, Converter={StaticResource StatusToBrush}}" />
+                                    <TextBlock Text="{Binding Status, Converter={StaticResource StatusToText}}"
+                                               VerticalAlignment="Center" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Typ" Width="110" SortMemberPath="Kind">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border Padding="8,2" HorizontalAlignment="Left" CornerRadius="4"
+                                        VerticalAlignment="Center">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background" Value="{StaticResource AccentTintBrush}" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsImported}" Value="True">
+                                                    <Setter Property="Background" Value="#FCEFDB" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <TextBlock Text="{Binding Kind}" FontSize="11" FontWeight="SemiBold"
+                                               Foreground="{StaticResource InkSecondaryBrush}" />
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="2*" />
+                    <DataGridTextColumn Header="Kategorie" Binding="{Binding CategoryName}" Width="*" />
+                    <DataGridTextColumn Header="Version" Binding="{Binding Version}" Width="80" />
+                    <DataGridTextColumn Header="Tags" Binding="{Binding Tags}" Width="*" />
+                    <DataGridTextColumn Header="Parameter" Width="90"
+                                        Binding="{Binding ParameterCountDisplay, Mode=OneWay}" />
+                    <DataGridTextColumn Header="Ergebnisse" Width="90"
+                                        Binding="{Binding ExpectedResultCountDisplay, Mode=OneWay}" />
+                    <DataGridTextColumn Header="Ersteller" Binding="{Binding CreatedBy}" Width="*" />
+                    <DataGridTextColumn Header="Geändert" Width="140"
+                                        Binding="{Binding LastChangedAt, Converter={StaticResource UtcToLocalText}}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <!-- Statuszeile -->
+        <TextBlock Grid.Row="3" Margin="2,12,0,0" Style="{StaticResource MutedText}">
+            <Run Text="{Binding ResultCount, Mode=OneWay}" />
+            <Run Text="Testfall/-fälle angezeigt" />
+        </TextBlock>
+    </Grid>
+</UserControl>
